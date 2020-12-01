@@ -2,12 +2,12 @@
 clone repo
 
 ## Set up front end
-`cd your-average-funko`\n
-`npm install`
+`cd your-average-funko`<br />
+`npm install`<br />
 `npm start`
 
 ## Set up back end
-`cd functions`
-`npm install`
+`cd functions`<br />
+`npm install`<br />
 `npm run serve`
 
