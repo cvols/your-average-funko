@@ -63,7 +63,7 @@ form.sign-up-form {
 
 button:focus,
 button:active {
-  outline: none;
+  outline: none !important;
 }
 
 .input-field:hover .icon {

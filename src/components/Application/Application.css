@@ -1,0 +1,8 @@
+.jumbotron {
+  display: flex !important;
+  justify-content: space-evenly !important;
+}
+
+.jumbotron img {
+  margin-right: 3rem;
+}
