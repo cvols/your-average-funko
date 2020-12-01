@@ -10,8 +10,10 @@ import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { auth, gProvider, fProvider } from "../../fire";
+import { useDataLayerValue } from "../../context/DataLayer";
 
 function Login() {
+  const [{ user }, dispatch] = useDataLayerValue();
   const [elementsObj, setElementsObj] = useState({});
   const [userObj, setUserObj] = useState({});
 
@@ -25,12 +27,44 @@ function Login() {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    console.log({ userObj });
+    auth
+      .createUserWithEmailAndPassword(userObj.email, userObj.password)
+      .then((user) => {
+        // signed up
+        var u = auth.currentUser;
+        u.updateProfile({
+          displayName: userObj.displayName,
+        })
+          .then(() => {
+            console.log("Set displayName");
+            dispatch({
+              type: "SET_USER",
+              user: u.providerData[0],
+            });
+          })
+          .catch((err) => {
+            console.log({ err });
+          });
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log({ errorCode, errorMessage });
+      });
   };
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    console.log({ userObj });
+    auth
+      .signInWithEmailAndPassword(userObj.email, userObj.password)
+      .then((user) => {
+        console.log("user signed in", { user });
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log({ errorCode, errorMessage });
+      });
   };
 
   const handleAuthLogin = (e) => {
@@ -41,7 +75,7 @@ function Login() {
         auth.signInWithPopup(gProvider).catch((err) => alert(err.message));
         break;
       case "facebook":
-        console.log("facebook auth");
+        auth.signInWithPopup(fProvider).catch((err) => alert(err.message));
         break;
       default:
         return;
@@ -63,14 +97,14 @@ function Login() {
             <h2 className="title">Sign in</h2>
             <div className="input-field">
               <input
-                type="text"
-                placeholder="Username"
+                type="email"
+                placeholder="Email"
                 onChange={(e) =>
-                  setUserObj({ ...userObj, username: e.target.value })
+                  setUserObj({ ...userObj, email: e.target.value })
                 }
               />
               <div className="icon">
-                <FontAwesomeIcon icon={faUser} />
+                <FontAwesomeIcon icon={faEnvelope} />
               </div>
             </div>
             <div className="input-field">
@@ -96,10 +130,18 @@ function Login() {
             {/* social sign in */}
             <p className="social-text">Or Sign In with social platforms</p>
             <div className="social-media">
-              <button className="social-icon">
+              <button
+                className="social-icon"
+                value="facebook"
+                onClick={handleAuthLogin}
+              >
                 <FontAwesomeIcon icon={faFacebookF} />
               </button>
-              <button className="social-icon">
+              <button
+                className="social-icon"
+                value="google"
+                onClick={handleAuthLogin}
+              >
                 <FontAwesomeIcon icon={faGoogle} />
               </button>
             </div>
@@ -110,9 +152,9 @@ function Login() {
             <div className="input-field">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Display Name"
                 onChange={(e) =>
-                  setUserObj({ ...userObj, username: e.target.value })
+                  setUserObj({ ...userObj, displayName: e.target.value })
                 }
               />
               <div className="icon">
@@ -152,21 +194,21 @@ function Login() {
               Sign Up
             </button>
             {/* social sign up */}
-            <p className="social-text">Or Sign Up with social platforms</p>
+            <p className="social-text">Or Sign In with social platforms</p>
             <div className="social-media">
               <button
                 className="social-icon"
                 value="facebook"
                 onClick={handleAuthLogin}
               >
-                <FontAwesomeIcon icon={faFacebookF} value="facebook" />
+                <FontAwesomeIcon icon={faFacebookF} />
               </button>
               <button
                 className="social-icon"
                 value="google"
                 onClick={handleAuthLogin}
               >
-                <FontAwesomeIcon icon={faGoogle} value="google" />
+                <FontAwesomeIcon icon={faGoogle} />
               </button>
             </div>
           </form>
