@@ -61,6 +61,11 @@ form.sign-up-form {
   opacity: 0;
 }
 
+button:focus,
+button:active {
+  outline: none !important;
+}
+
 .input-field:hover .icon {
   color: #04befe;
 }
