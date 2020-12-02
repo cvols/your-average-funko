@@ -2,6 +2,8 @@ export const initialState = {
   user: null,
 };
 
+console.log("matt is a dumb bitch");
+
 const reducer = (state, action) => {
   console.log({ action });
 
