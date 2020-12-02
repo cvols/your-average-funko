@@ -27,12 +27,12 @@
 }
 
 .login::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 2000px;
   height: 2000px;
   border-radius: 50%;
-  background: linear-gradient(-45deg, #4481eb, #04befe);
+  background: linear-gradient(-45deg, var(--primary), #04befe);
   top: -10%;
   right: 48%;
   transform: translateY(-50%);
@@ -166,8 +166,8 @@ button:active {
 
 .social-icon:hover {
   color: white;
-  background-color: #4481eb;
-  border-color: #4481eb;
+  background-color: var(--primary);
+  border-color: var(--primary);
   transform: scale(1.1);
 }
 

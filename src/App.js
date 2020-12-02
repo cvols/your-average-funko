@@ -1,10 +1,9 @@
-import Login from "./components/Login/Login";
-import { useDataLayerValue } from "./context/DataLayer";
-import { auth } from "./fire";
-import { useEffect, useState } from "react";
-import Application from "./components/Application/Application";
+import { useEffect, useState } from 'react';
 
-import "./App.css";
+import { LoginPage, HomePage } from './pages';
+import { useDataLayerValue } from './context/DataLayer';
+import { auth } from './fire';
+import './App.css';
 
 function App() {
   const [{ user }, dispatch] = useDataLayerValue();
@@ -12,12 +11,12 @@ function App() {
   console.log({ user });
 
   useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
+    auth.onAuthStateChanged(authUser => {
       if (authUser) {
         if (!user) {
           dispatch({
-            type: "SET_USER",
-            user: authUser.providerData[0],
+            type: 'SET_USER',
+            user: authUser.providerData[0]
           });
         }
       }
@@ -30,7 +29,7 @@ function App() {
     return <div className="loader">Your Average Funko</div>;
   }
 
-  return <div className="app">{user ? <Application /> : <Login />}</div>;
+  return <div className="app">{user ? <HomePage /> : <LoginPage />}</div>;
 }
 
 export default App;

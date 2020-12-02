@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { useDataLayerValue } from "../../context/DataLayer";
-import { auth } from "../../fire";
-import funkoBrand from "../../img/funkoBrand.png";
+import { useDataLayerValue } from '../../../../context/DataLayer';
+import { auth } from '../../../../fire';
+import funkoBrand from '../../../../img/funkoBrand.png';
 
-import "./Application.css";
+import './Home.css';
 
-function Application() {
+function Home() {
   const [{ user }, dispatch] = useDataLayerValue();
 
   return (
@@ -21,10 +21,10 @@ function Application() {
               .signOut()
               .then(() => {
                 dispatch({
-                  type: "LOGOUT",
+                  type: 'LOGOUT'
                 });
               })
-              .catch((err) => {
+              .catch(err => {
                 console.error(err);
               })
           }
@@ -36,4 +36,4 @@ function Application() {
   );
 }
 
-export default Application;
+export default Home;
