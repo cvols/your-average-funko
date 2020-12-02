@@ -12,7 +12,6 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        // user is logged in
         if (!user) {
           dispatch({
             type: "SET_USER",
