@@ -13,7 +13,7 @@ import { auth, gProvider, fProvider } from "../../fire";
 import { useDataLayerValue } from "../../context/DataLayer";
 
 function Login() {
-  const [{ user }, dispatch] = useDataLayerValue();
+  const [{}, dispatch] = useDataLayerValue();
   const [elementsObj, setElementsObj] = useState({});
   const [userObj, setUserObj] = useState({});
 
@@ -36,20 +36,18 @@ function Login() {
           displayName: userObj.displayName,
         })
           .then(() => {
-            console.log("Set displayName");
             dispatch({
               type: "SET_USER",
               user: u.providerData[0],
             });
           })
-          .catch((err) => {
-            console.log({ err });
+          .catch((error) => {
+            console.error({ error });
           });
       })
       .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
+        const { code, message } = error;
+        console.error({ code, message });
       });
   };
 
@@ -57,19 +55,14 @@ function Login() {
     e.preventDefault();
     auth
       .signInWithEmailAndPassword(userObj.email, userObj.password)
-      .then((user) => {
-        console.log("user signed in", { user });
-      })
       .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
+        const { code, message } = error;
+        console.error({ code, message });
       });
   };
 
   const handleAuthLogin = (e) => {
     e.preventDefault();
-    console.log(e.currentTarget.value);
     switch (e.currentTarget.value) {
       case "google":
         auth.signInWithPopup(gProvider).catch((err) => alert(err.message));

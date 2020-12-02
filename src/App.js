@@ -1,29 +1,34 @@
-import "./App.css";
 import Login from "./components/Login/Login";
 import { useDataLayerValue } from "./context/DataLayer";
 import { auth } from "./fire";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Application from "./components/Application/Application";
+
+import "./App.css";
 
 function App() {
   const [{ user }, dispatch] = useDataLayerValue();
+  const [loading, setLoading] = useState(true);
   console.log({ user });
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        // user is logged in
         if (!user) {
           dispatch({
             type: "SET_USER",
             user: authUser.providerData[0],
           });
         }
-      } else {
-        // user is logged out
       }
+
+      setLoading(false);
     });
-  }, [dispatch]);
+  }, [user]);
+
+  if (loading) {
+    return <div className="loader">Your Average Funko</div>;
+  }
 
   return <div className="app">{user ? <Application /> : <Login />}</div>;
 }

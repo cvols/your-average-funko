@@ -228,6 +228,8 @@ button:active {
 }
 
 .image {
+  object-fit: contain;
+  max-height: 400px;
   width: 100%;
   transition: 1100ms 400ms ease-in-out;
 }

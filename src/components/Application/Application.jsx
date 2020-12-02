@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import { useDataLayerValue } from "../../context/DataLayer";
 import { auth } from "../../fire";
 import funkoBrand from "../../img/funkoBrand.png";
@@ -9,26 +10,23 @@ function Application() {
   const [{ user }, dispatch] = useDataLayerValue();
 
   return (
-    <div className="application container">
+    <div className="application container-fluid">
       <div className="jumbotron">
-        <img src={funkoBrand} alt="" />
-        <h1>{`Logged in as ${user?.displayName}`}</h1>
+        <img src={funkoBrand} alt="" className="funkoBrand" />
+        <h1 className="text-center">{`Logged in as ${user?.displayName}`}</h1>
         <button
           className="btn btn-danger"
-          onClick={
-            user?.providerId &&
-            (() =>
-              auth
-                .signOut()
-                .then(() => {
-                  console.log("signed out succesfully");
-                  dispatch({
-                    type: "LOGOUT",
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                }))
+          onClick={() =>
+            auth
+              .signOut()
+              .then(() => {
+                dispatch({
+                  type: "LOGOUT",
+                });
+              })
+              .catch((err) => {
+                console.error(err);
+              })
           }
         >
           LogOut
