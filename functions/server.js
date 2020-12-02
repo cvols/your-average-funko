@@ -19,10 +19,12 @@ app.get('/hello-world', (req, res) => {
 });
 
 (async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: null
-  });
+  // const browser = await puppeteer.launch({
+  //   headless: false,
+  //   defaultViewport: null
+  // });
+
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   const url = 'https://www.cardboardconnection.com/brand/funko/funko-pop';
   await page.goto(url, {
@@ -69,7 +71,7 @@ app.get('/hello-world', (req, res) => {
   // const href = await page.$('.product-subtitle a');
   // await href.evaluate(ref => ref.click());
 
-  // await browser.close();
+  await browser.close();
 })();
 
 // create
