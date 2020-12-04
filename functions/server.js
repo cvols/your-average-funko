@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./permissions.json");
+const serviceAccount = require("./firebase/access.json");
 const functions = require("firebase-functions");
 const express = require("express");
 const cors = require("cors");
@@ -8,11 +8,11 @@ const puppeteer = require("puppeteer");
 const app = express();
 app.use(cors({ origin: true }));
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://youraveragefunko-2a93b.firebaseio.com",
-// });
-// const db = admin.firestore();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://youraveragefunko-2a93b.firebaseio.com",
+});
+const db = admin.firestore();
 
 app.get("/hello-world", (req, res) => {
   return res.status(200).send("Hello World!");
