@@ -1,96 +1,74 @@
-const admin = require('firebase-admin');
-const serviceAccount = require('./permissions.json');
-const functions = require('firebase-functions');
-const express = require('express');
-const cors = require('cors');
-const puppeteer = require('puppeteer');
+const admin = require("firebase-admin");
+const serviceAccount = require("./firebase/access.json");
+const functions = require("firebase-functions");
+const express = require("express");
+const cors = require("cors");
+const puppeteer = require("puppeteer");
 
 const app = express();
 app.use(cors({ origin: true }));
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://youraveragefunko-2a93b.firebaseio.com'
+  databaseURL: "https://youraveragefunko-2a93b.firebaseio.com",
 });
 const db = admin.firestore();
 
-app.get('/hello-world', (req, res) => {
-  return res.status(200).send('Hello World!');
+app.get("/hello-world", (req, res) => {
+  return res.status(200).send("Hello World!");
 });
 
 (async () => {
-  // const browser = await puppeteer.launch({
-  //   headless: false,
-  //   defaultViewport: null
-  // });
+  let theOfficeUrl =
+    "https://www.cardboardconnection.com/funko-pop-the-office-vinyl-figures";
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const url = 'https://www.cardboardconnection.com/brand/funko/funko-pop';
-  await page.goto(url, {
-    waitUntil: 'domcontentloaded'
+  let browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
   });
-  await page.waitForSelector('.product-subtitle');
+  let page = await browser.newPage();
 
-  // const results = await page.evaluate(() => {
-  //   const urlSelector = document.querySelectorAll('.product-subtitle a');
-  //   const urls = [...urlSelector];
-  //   return urls.map(url => url.innerHTML);
-  // });
+  await page.goto(theOfficeUrl), { waitUntil: "networkidle2" };
 
-  // results.map(async result => {
-  //   console.log('result: ', result);
-  // });
+  let data = await page.evaluate(() => {
+    var image = Array.from(
+      document.querySelectorAll("div.post_anchor_divs.gallery img")
+    ).map((image) => image.src);
 
-  await page.$$eval('.product-subtitle a', links => {
-    return links.forEach(async link => {
-      link.click();
+    // gives us an array off all h3 titles on page
+    var title = Array.from(document.querySelectorAll("h3")).map(
+      (title) => title.innerText
+    );
+    let forDeletion = ["", "Leave a Comment:"];
+    title = title.filter((item) => !forDeletion.includes(item));
 
-      const [el] = await page.$x(
-        '//*[@id="post-main-121693"]/div[1]/div[1]/h1'
-      );
-      const txt = await el.getProperty('textContent');
-      const rawText = await txt.jsonValue();
-      console.log('rawText: ', rawText);
-    });
+    return {
+      image,
+      title,
+    };
   });
-
-  // await page.evaluate(() => {
-  //   const elements = document.querySelectorAll('.product-subtitle a');
-  //   for (let element of elements) {
-  //     element.click();
-  //   }
-  // });
-
-  // const [el] = await page.$x('//*[@id="productListing"]/div[1]/div[2]/h2/a');
-  // const href = await el.getProperty('href');
-
-  // console.log('href: ', href);
-
-  // click works
-  // const href = await page.$('.product-subtitle a');
-  // await href.evaluate(ref => ref.click());
-
-  await browser.close();
+  console.log("Running Scrapper...");
+  console.log({ data });
+  console.log("======================");
 })();
 
 // create
-app.post('/api/create', (req, res) => {
-  (async () => {
-    try {
-      await db
-        .collection('items')
-        .doc('/' + req.body.id + '/')
-        .create({ item: req.body.item });
-      return res.status(200).send({
-        id: req.body.id,
-        item: req.body.item
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send(error);
-    }
-  })();
-});
+// app.post("/api/create", (req, res) => {
+//   (async () => {
+//     try {
+//       await db
+//         .collection("items")
+//         .doc("/" + req.body.id + "/")
+//         .create({ item: req.body.item });
+//       return res.status(200).send({
+//         id: req.body.id,
+//         item: req.body.item,
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       return res.status(500).send(error);
+//     }
+//   })();
+// });
 
 exports.app = functions.https.onRequest(app);
